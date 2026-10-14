@@ -1,0 +1,2 @@
+Estou desenvolvendo uma Máquina de Morse com Arduino UNO: um botão transforma pulsos curtos e longos em pontos e traços, e o sistema decodifica letras com retorno em LED, buzzer e OLED. O projeto explora temporização, debounce e árvore binária em C++. Próximos passos: montar o circuito, validar os tempos no hardware e registrar os testes.
+#Arduino #ArduinoUNO #Eletronica #Morse #Cplusplus #Maker

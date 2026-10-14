@@ -1,0 +1,114 @@
+<div align="center">
+
+# 📡 Máquina de Morse
+
+**Transmissor e decodificador de código Morse com Arduino Uno, botão, buzzer, LED e display OLED**
+
+[![Arduino](https://img.shields.io/badge/Arduino-Uno-00979D?style=for-the-badge&logo=Arduino&logoColor=white)](https://www.arduino.cc/)
+[![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
+
+</div>
+
+---
+
+## 📋 Descrição
+
+A **Máquina de Morse** detecta quanto tempo o botão permanece pressionado e converte o pulso em ponto ou traço. Pausas separam letras e palavras. Uma árvore binária em C++ decodifica a sequência, enquanto o LED e o buzzer reproduzem cada pulso e o display OLED apresenta o código recebido e o texto.
+
+O projeto explora temporização, debounce de entrada, decodificação de árvore binária e integração de periféricos I2C.
+
+---
+
+## ⚙️ Componentes Utilizados
+
+| Quantidade | Componente | Especificação |
+|:---:|---|---|
+| 1x | Arduino Uno | ATmega328P |
+| 1x | Botão momentâneo | Entrada com pull-up interno |
+| 1x | Buzzer piezo passivo | Acionado com tone() |
+| 1x | LED | Pode usar o LED integrado no D13 |
+| 1x | Display OLED | SSD1306 I2C, 128×64 |
+| 1x | Resistor | Valor adequado ao LED externo |
+| — | Jumpers e protoboard | — |
+
+> O firmware requer buzzer passivo para controlar a frequência. Verifique a tensão de alimentação aceita pelo seu módulo OLED.
+
+---
+
+## 🔌 Pinagem
+
+```
+Arduino Uno
+├── D2  → Botão → GND (INPUT_PULLUP)
+├── D9  → Buzzer passivo → GND
+├── D13 → LED integrado; LED externo requer resistor série
+├── A4  → OLED SDA
+└── A5  → OLED SCL
+```
+
+O botão lê HIGH em repouso e LOW quando pressionado. A alimentação do OLED deve seguir a especificação do módulo.
+
+---
+
+## 🖼️ Esquemático
+
+O arquivo [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc) acompanha a documentação de ligações no formato ASC do LTspice. Arduino e display são módulos externos; este desenho de referência não representa uma simulação elétrica completa.
+
+---
+
+## 💻 Como Funciona
+
+### Captura e temporização
+
+O botão usa INPUT_PULLUP e debounce por software. Ao soltar, a duração do pulso é comparada com UNIT_MS: até duas unidades é ponto; acima disso é traço. O padrão inicial de uma unidade é 180 ms e pode ser ajustado no sketch após testes com o operador.
+
+### Decodificação
+
+A sequência de pontos e traços percorre uma árvore binária: ponto segue pelo ramo esquerdo e traço pelo direito. A tabela inclui A–Z e 0–9. Após uma pausa de três unidades, o firmware fecha a letra; após sete unidades sem novo pulso, insere um espaço.
+
+### Retorno ao operador
+
+O buzzer toca e o LED acende para repetir cada elemento Morse. A OLED SSD1306 mostra a sequência atual, a letra decodificada e o texto acumulado.
+
+---
+
+## 🗂️ Estrutura dos Arquivos
+
+```
+maquina-de-morse/
+├── README.md
+├── post_linkedin.txt
+├── circuit_images/                  # Imagens do projeto (vazia inicialmente)
+├── Esquemático/
+│   └── maquina-de-morse.asc         # Referência de ligações LTspice
+└── sketch_maquina-de-morse/
+    └── sketch_maquina-de-morse.ino  # Firmware principal
+```
+
+---
+
+## 🚀 Como Usar
+
+1. Instale a Arduino IDE e as bibliotecas Adafruit GFX Library e Adafruit SSD1306.
+2. Monte as ligações indicadas, confirmando a tensão do seu OLED.
+3. Abra sketch_maquina-de-morse/sketch_maquina-de-morse.ino.
+4. Selecione Arduino Uno e a porta serial correta.
+5. Carregue o sketch. Pressione e solte o botão para transmitir; uma pausa fecha a letra.
+
+---
+
+## 🔧 Personalização
+
+Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto. O limiar atual é duas unidades, e o traço reproduz três unidades. A montagem e os tempos precisam ser validados no hardware real.
+
+---
+
+## ✅ Estado e Próximos Passos
+
+- [x] Criar estrutura inicial do projeto e firmware base.
+- [ ] Desenhar e validar o esquemático elétrico completo.
+- [ ] Testar botão, LED, buzzer e OLED no Arduino Uno.
+- [ ] Calibrar a temporização e validar letras, números e espaços.
+- [ ] Adicionar fotos e demonstração em circuit_images/.
+
+*Desenvolvido por Felipe Grolla*
