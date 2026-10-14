@@ -50,9 +50,21 @@ O botão lê HIGH em repouso e LOW quando pressionado. A alimentação do OLED d
 
 ---
 
-## 🖼️ Esquemático
+## 🖼️ Esquemático e montagem
 
-O arquivo [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc) acompanha a documentação de ligações no formato ASC do LTspice. Arduino e display são módulos externos; este desenho de referência não representa uma simulação elétrica completa.
+### Esquemático elétrico
+
+<!-- Adicione a imagem exportada do LTspice em circuit_images/esquematico.png -->
+![Esquemático elétrico do projeto](circuit_images/esquematico.png)
+
+Arquivo fonte do LTspice: [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc).
+
+### Montagem real
+
+<!-- Adicione uma foto da montagem em circuit_images/montagem_real.jpg -->
+![Montagem real do projeto](circuit_images/montagem_real.jpg)
+
+Coloque as imagens nos caminhos indicados acima para que sejam exibidas aqui no GitHub. Até a montagem e captura das fotos, estes espaços ficam reservados para a documentação visual.
 
 ---
 
@@ -112,3 +124,4 @@ Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto. O limiar
 - [ ] Adicionar fotos e demonstração em circuit_images/.
 
 *Desenvolvido por Felipe Grolla*
+
