@@ -57,7 +57,7 @@ O botão lê HIGH em repouso e LOW quando pressionado. A alimentação do OLED d
 <!-- Adicione a imagem exportada do LTspice em circuit_images/esquematico.png -->
 ![Esquemático elétrico do projeto](circuit_images/esquematico.png)
 
-Arquivo fonte do LTspice: [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc).
+O arquivo [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc) mostra as interconexões do Arduino Uno, botão normalmente aberto, buzzer piezo passivo, LED com resistor de 220 ohms e OLED SSD1306 I2C. Os rótulos de rede associam os periféricos aos pinos usados pelo firmware. Arduino e OLED são módulos externos, não modelos SPICE simulados.
 
 ### Montagem real
 
@@ -92,7 +92,7 @@ maquina-de-morse/
 ├── post_linkedin.txt
 ├── circuit_images/                  # Imagens do projeto (vazia inicialmente)
 ├── Esquemático/
-│   └── maquina-de-morse.asc         # Referência de ligações LTspice
+│   └── maquina-de-morse.asc         # Esquemático de interconexões LTspice
 └── sketch_maquina-de-morse/
     └── sketch_maquina-de-morse.ino  # Firmware principal
 ```
@@ -118,10 +118,9 @@ Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto. O limiar
 ## ✅ Estado e Próximos Passos
 
 - [x] Criar estrutura inicial do projeto e firmware base.
-- [ ] Desenhar e validar o esquemático elétrico completo.
+- [x] Desenhar o esquemático de interconexões no formato LTspice.
 - [ ] Testar botão, LED, buzzer e OLED no Arduino Uno.
 - [ ] Calibrar a temporização e validar letras, números e espaços.
 - [ ] Adicionar fotos e demonstração em circuit_images/.
 
 *Desenvolvido por Felipe Grolla*
-
