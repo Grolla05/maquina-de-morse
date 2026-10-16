@@ -80,7 +80,7 @@ A sequência de pontos e traços percorre uma árvore binária: ponto segue pelo
 
 ### Retorno ao operador
 
-O buzzer toca e o LED acende para repetir cada elemento Morse. A OLED SSD1306 mostra a sequência atual, a letra decodificada e o texto acumulado.
+O buzzer toca e o LED acende enquanto o botão está pressionado, sem bloquear a leitura do próximo pulso. A OLED SSD1306 mostra a sequência atual, a letra decodificada e o texto acumulado (últimos 32 caracteres). Segurar o botão por 2 s ou mais limpa o texto.
 
 ---
 
@@ -111,7 +111,7 @@ maquina-de-morse/
 
 ## 🔧 Personalização
 
-Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto. O limiar atual é duas unidades, e o traço reproduz três unidades. A montagem e os tempos precisam ser validados no hardware real.
+Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto (e CLEAR_MS para o tempo de limpeza). O limiar atual é duas unidades, e o bip dura o tempo em que o botão fica pressionado. A montagem e os tempos precisam ser validados no hardware real.
 
 ---
 
