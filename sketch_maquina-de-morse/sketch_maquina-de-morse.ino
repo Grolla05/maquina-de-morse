@@ -2,10 +2,14 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+// Maquina de Morse: botao -> ponto/traco -> letra -> texto no OLED.
+// Bip e LED acompanham o botao enquanto ele esta pressionado (sem delay).
 constexpr byte BUTTON_PIN = 2, BUZZER_PIN = 9, LED_PIN = 13;
 constexpr unsigned long UNIT_MS = 180, DEBOUNCE_MS = 25;
 constexpr unsigned long LETTER_GAP_MS = UNIT_MS * 3, WORD_GAP_MS = UNIT_MS * 7;
-constexpr byte MAX_LEN = 5, TREE_SIZE = 64;
+constexpr unsigned long CLEAR_MS = 2000;  // segurar o botao por este tempo limpa o texto
+constexpr unsigned int TONE_HZ = 800;
+constexpr byte MAX_LEN = 5, TREE_SIZE = 64, MAX_MSG = 32;
 Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
 struct Entry { const char *code; char value; };
@@ -22,9 +26,11 @@ const Entry table[] = {
 char tree[TREE_SIZE] = {}, code[MAX_LEN + 1] = "";
 byte codeLen = 0;
 String message = "";
+bool displayOk = false;
 bool stable = HIGH, reading = HIGH, pressing = false, letterWait = false, wordWait = false;
 unsigned long debounceAt = 0, pressAt = 0, releaseAt = 0;
 
+// Arvore binaria em vetor: ponto -> 2n+1, traco -> 2n+2 (indices max 62 < 64).
 void buildTree() {
   for (const Entry &e : table) {
     byte n = 0;
@@ -43,8 +49,8 @@ char decode() {
   }
   return tree[n] ? tree[n] : '?';
 }
-void show(const char *status) {
-  if (!display.width()) return;
+void show(const __FlashStringHelper *status) {
+  if (!displayOk) return;
   display.clearDisplay(); display.setTextColor(SSD1306_WHITE); display.setTextSize(1);
   display.setCursor(0,0); display.println(F("MAQUINA DE MORSE"));
   display.drawLine(0,10,127,10,SSD1306_WHITE);
@@ -55,40 +61,52 @@ void show(const char *status) {
   display.println(message.length()>16 ? message.substring(message.length()-16) : message);
   display.setCursor(0,56); display.print(status); display.display();
 }
-void pulse(unsigned int ms) {
-  digitalWrite(LED_PIN,HIGH); tone(BUZZER_PIN,800); delay(ms);
-  noTone(BUZZER_PIN); digitalWrite(LED_PIN,LOW);
-}
 void addPulse(unsigned long ms) {
-  if (codeLen >= MAX_LEN) return;
+  if (codeLen >= MAX_LEN) { show(F("LIMITE 5")); return; }
   char symbol = ms <= UNIT_MS*2 ? '.' : '-';
   code[codeLen++] = symbol; code[codeLen] = 0;
   letterWait = true; wordWait = false;
-  pulse(symbol=='.' ? UNIT_MS : UNIT_MS*3); show(symbol=='.' ? "PONTO" : "TRACO");
+  show(symbol=='.' ? F("PONTO") : F("TRACO"));
+}
+void appendChar(char c) {
+  if (message.length() >= MAX_MSG) message.remove(0, 1);  // mantem as ultimas letras
+  message += c;
 }
 void finishLetter() {
   if (!codeLen) return;
-  char c = decode(); if (message.length()<32) message += c;
-  code[0]=0; codeLen=0; letterWait=false; wordWait=true; show("LETRA");
+  appendChar(decode());
+  code[0]=0; codeLen=0; letterWait=false; wordWait=true; show(F("LETRA"));
+}
+void clearAll() {
+  message = ""; code[0]=0; codeLen=0; letterWait=false; wordWait=false;
+  show(F("LIMPO"));
 }
 void setup() {
   pinMode(BUTTON_PIN,INPUT_PULLUP); pinMode(BUZZER_PIN,OUTPUT); pinMode(LED_PIN,OUTPUT);
+  message.reserve(MAX_MSG + 1);
   buildTree();
-  if (display.begin(SSD1306_SWITCHCAPVCC,0x3C)) show("PRONTO");
+  displayOk = display.begin(SSD1306_SWITCHCAPVCC,0x3C);
+  show(F("PRONTO"));
 }
 void loop() {
   unsigned long now=millis(); bool sample=digitalRead(BUTTON_PIN);
   if (sample!=reading) { reading=sample; debounceAt=now; }
   if (now-debounceAt>=DEBOUNCE_MS && stable!=reading) {
     stable=reading;
-    if (stable==LOW) { pressAt=now; pressing=true; }
-    else if (pressing) { addPulse(now-pressAt); pressing=false; releaseAt=millis(); }
+    if (stable==LOW) {            // botao pressionado: bip + LED enquanto segura
+      pressAt=now; pressing=true;
+      tone(BUZZER_PIN,TONE_HZ); digitalWrite(LED_PIN,HIGH);
+    } else if (pressing) {        // botao solto
+      noTone(BUZZER_PIN); digitalWrite(LED_PIN,LOW);
+      unsigned long held=now-pressAt;
+      pressing=false; releaseAt=now;
+      if (held >= CLEAR_MS) clearAll(); else addPulse(held);
+    }
   }
   if (stable==HIGH && letterWait && now-releaseAt>=LETTER_GAP_MS) {
     finishLetter();
   } else if (stable==HIGH && wordWait && now-releaseAt>=WORD_GAP_MS) {
-    if (message.length() && message[message.length()-1]!=' ') message += ' ';
-    wordWait=false; show("PAUSA");
+    if (message.length() && message[message.length()-1]!=' ') appendChar(' ');
+    wordWait=false; show(F("PAUSA"));
   }
 }
-
