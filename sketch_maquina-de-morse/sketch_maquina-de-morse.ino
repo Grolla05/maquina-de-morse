@@ -3,8 +3,8 @@
 #include <Adafruit_SSD1306.h>
 
 // Maquina de Morse: botao -> ponto/traco -> letra -> texto no OLED.
-// Bip e LED acompanham o botao enquanto ele esta pressionado (sem delay).
-constexpr byte BUTTON_PIN = 2, BUZZER_PIN = 9, LED_PIN = 13;
+// O bip acompanha o botao enquanto ele esta pressionado (sem delay).
+constexpr byte BUTTON_PIN = 2, BUZZER_PIN = 9;
 constexpr unsigned long UNIT_MS = 180, DEBOUNCE_MS = 25;
 constexpr unsigned long LETTER_GAP_MS = UNIT_MS * 3, WORD_GAP_MS = UNIT_MS * 7;
 constexpr unsigned long CLEAR_MS = 2000;  // segurar o botao por este tempo limpa o texto
@@ -82,7 +82,7 @@ void clearAll() {
   show(F("LIMPO"));
 }
 void setup() {
-  pinMode(BUTTON_PIN,INPUT_PULLUP); pinMode(BUZZER_PIN,OUTPUT); pinMode(LED_PIN,OUTPUT);
+  pinMode(BUTTON_PIN,INPUT_PULLUP); pinMode(BUZZER_PIN,OUTPUT);
   message.reserve(MAX_MSG + 1);
   buildTree();
   displayOk = display.begin(SSD1306_SWITCHCAPVCC,0x3C);
@@ -93,11 +93,11 @@ void loop() {
   if (sample!=reading) { reading=sample; debounceAt=now; }
   if (now-debounceAt>=DEBOUNCE_MS && stable!=reading) {
     stable=reading;
-    if (stable==LOW) {            // botao pressionado: bip + LED enquanto segura
+    if (stable==LOW) {            // botao pressionado: bip enquanto segura
       pressAt=now; pressing=true;
-      tone(BUZZER_PIN,TONE_HZ); digitalWrite(LED_PIN,HIGH);
+      tone(BUZZER_PIN,TONE_HZ);
     } else if (pressing) {        // botao solto
-      noTone(BUZZER_PIN); digitalWrite(LED_PIN,LOW);
+      noTone(BUZZER_PIN);
       unsigned long held=now-pressAt;
       pressing=false; releaseAt=now;
       if (held >= CLEAR_MS) clearAll(); else addPulse(held);

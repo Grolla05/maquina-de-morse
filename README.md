@@ -2,7 +2,7 @@
 
 # 📡 Máquina de Morse
 
-**Transmissor e decodificador de código Morse com Arduino Uno, botão, buzzer, LED e display OLED**
+**Transmissor e decodificador de código Morse com Arduino Uno, botão, buzzer e display OLED**
 
 [![Arduino](https://img.shields.io/badge/Arduino-Uno-00979D?style=for-the-badge&logo=Arduino&logoColor=white)](https://www.arduino.cc/)
 [![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
@@ -13,7 +13,7 @@
 
 ## 📋 Descrição
 
-A **Máquina de Morse** detecta quanto tempo o botão permanece pressionado e converte o pulso em ponto ou traço. Pausas separam letras e palavras. Uma árvore binária em C++ decodifica a sequência, enquanto o LED e o buzzer reproduzem cada pulso e o display OLED apresenta o código recebido e o texto.
+A **Máquina de Morse** detecta quanto tempo o botão permanece pressionado e converte o pulso em ponto ou traço. Pausas separam letras e palavras. Uma árvore binária em C++ decodifica a sequência, enquanto o buzzer reproduz cada pulso e o display OLED apresenta o código recebido e o texto.
 
 O projeto explora temporização, debounce de entrada, decodificação de árvore binária e integração de periféricos I2C.
 
@@ -26,9 +26,7 @@ O projeto explora temporização, debounce de entrada, decodificação de árvor
 | 1x | Arduino Uno | ATmega328P |
 | 1x | Botão momentâneo | Entrada com pull-up interno |
 | 1x | Buzzer piezo passivo | Acionado com tone() |
-| 1x | LED | Pode usar o LED integrado no D13 |
 | 1x | Display OLED | SSD1306 I2C, 128×64 |
-| 1x | Resistor | Valor adequado ao LED externo |
 | — | Jumpers e protoboard | — |
 
 > O firmware requer buzzer passivo para controlar a frequência. Verifique a tensão de alimentação aceita pelo seu módulo OLED.
@@ -41,7 +39,6 @@ O projeto explora temporização, debounce de entrada, decodificação de árvor
 Arduino Uno
 ├── D2  → Botão → GND (INPUT_PULLUP)
 ├── D9  → Buzzer passivo → GND
-├── D13 → LED integrado; LED externo requer resistor série
 ├── A4  → OLED SDA
 └── A5  → OLED SCL
 ```
@@ -57,7 +54,7 @@ O botão lê HIGH em repouso e LOW quando pressionado. A alimentação do OLED d
 <!-- Adicione a imagem exportada do LTspice em circuit_images/esquematico.png -->
 ![Esquemático elétrico do projeto](circuit_images/esquematico.png)
 
-O arquivo [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc) mostra as interconexões do Arduino Uno, botão normalmente aberto, buzzer piezo passivo, LED com resistor de 220 ohms e OLED SSD1306 I2C. Os rótulos de rede associam os periféricos aos pinos usados pelo firmware. Arduino e OLED são módulos externos, não modelos SPICE simulados.
+O arquivo [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc) mostra as interconexões do Arduino Uno, botão normalmente aberto, buzzer piezo passivo e OLED SSD1306 I2C. Os rótulos de rede associam os periféricos aos pinos usados pelo firmware. Arduino e OLED são módulos externos, não modelos SPICE simulados.
 
 ### Montagem real
 
@@ -80,7 +77,7 @@ A sequência de pontos e traços percorre uma árvore binária: ponto segue pelo
 
 ### Retorno ao operador
 
-O buzzer toca e o LED acende enquanto o botão está pressionado, sem bloquear a leitura do próximo pulso. A OLED SSD1306 mostra a sequência atual, a letra decodificada e o texto acumulado (últimos 32 caracteres). Segurar o botão por 2 s ou mais limpa o texto.
+O buzzer toca enquanto o botão está pressionado, sem bloquear a leitura do próximo pulso. A OLED SSD1306 mostra a sequência atual, a letra decodificada e o texto acumulado (últimos 32 caracteres). Segurar o botão por 2 s ou mais limpa o texto.
 
 ---
 
@@ -119,7 +116,7 @@ Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto (e CLEAR_
 
 - [x] Criar estrutura inicial do projeto e firmware base.
 - [x] Desenhar o esquemático de interconexões no formato LTspice.
-- [ ] Testar botão, LED, buzzer e OLED no Arduino Uno.
+- [ ] Testar botão, buzzer e OLED no Arduino Uno.
 - [ ] Calibrar a temporização e validar letras, números e espaços.
 - [ ] Adicionar fotos e demonstração em circuit_images/.
 
