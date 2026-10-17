@@ -58,10 +58,17 @@ O arquivo [maquina-de-morse.asc](Esquem%C3%A1tico/maquina-de-morse.asc) mostra a
 
 ### Montagem real
 
-<!-- Adicione uma foto da montagem em circuit_images/montagem_real.jpg -->
+Montagem em protoboard com Arduino Uno, botão, buzzer passivo e OLED SSD1306. Tela inicial ("PRONTO"):
+
 ![Montagem real do projeto](circuit_images/montagem_real.jpg)
 
-Coloque as imagens nos caminhos indicados acima para que sejam exibidas aqui no GitHub. Até a montagem e captura das fotos, estes espaços ficam reservados para a documentação visual.
+Digitando um ponto: o OLED mostra o código `--..`, a letra decodificada e o texto acumulado.
+
+![Digitando em Morse](circuit_images/digitando.jpg)
+
+Após uma pausa longa, o firmware insere o espaço entre palavras ("PAUSA").
+
+![Texto decodificado](circuit_images/texto_decodificado.jpg)
 
 ---
 
@@ -87,7 +94,7 @@ O buzzer toca enquanto o botão está pressionado, sem bloquear a leitura do pr�
 maquina-de-morse/
 ├── README.md
 ├── post_linkedin.txt
-├── circuit_images/                  # Imagens do projeto (vazia inicialmente)
+├── circuit_images/                  # Fotos da montagem (e esquemático exportado)
 ├── Esquemático/
 │   └── maquina-de-morse.asc         # Esquemático de interconexões LTspice
 └── sketch_maquina-de-morse/
@@ -116,8 +123,10 @@ Ajuste UNIT_MS no início do sketch para calibrar a duração do ponto (e CLEAR_
 
 - [x] Criar estrutura inicial do projeto e firmware base.
 - [x] Desenhar o esquemático de interconexões no formato LTspice.
-- [ ] Testar botão, buzzer e OLED no Arduino Uno.
+- [x] Testar botão, buzzer e OLED no Arduino Uno.
 - [ ] Calibrar a temporização e validar letras, números e espaços.
-- [ ] Adicionar fotos e demonstração em circuit_images/.
+- [x] Adicionar fotos da montagem em circuit_images/.
+- [ ] Reexportar o esquemático LTspice (sem o LED) para circuit_images/esquematico.png.
+- [ ] Adicionar uma demonstração em vídeo ou GIF.
 
 *Desenvolvido por Felipe Grolla*
